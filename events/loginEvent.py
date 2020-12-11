@@ -195,8 +195,12 @@ def handle(tornadoRequest):
 		# Get location and country from ip.zxq.co or database
 		if glob.localize:
 			# Get location and country from IP
-			latitude, longitude = locationHelper.getLocation(requestIP)
-			countryLetters = locationHelper.getCountry(requestIP)
+			notHotGarbage = requestIP.split(",")[1]
+			someOtherHotGarbage = notHotGarbage.replace(" ", "")
+
+			latitude, longitude = locationHelper.getLocation(someOtherHotGarbage)
+			countryLetters = locationHelper.getCountry(someOtherHotGarbage)
+
 			country = countryHelper.getCountryID(countryLetters)
 		else:
 			# Set location to 0,0 and get country from db
