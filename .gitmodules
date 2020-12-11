@@ -1,3 +1,4 @@
 [submodule "common"]
 	path = common
 	url = https://github.com/osuvortex/common.git
+	branch = peppy
