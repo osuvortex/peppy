@@ -55,3 +55,11 @@ def handle(userToken, _=None, deleteToken=True):
 
 		# Console output
 		log.info("{} has been disconnected. (logout)".format(username))
+		
+		# Unset action keys from redis
+		glob.redis.delete("peppy:actions:{}:actionid".format(userID))
+		glob.redis.delete("peppy:actions:{}:actiontext".format(userID))
+		glob.redis.delete("peppy:actions:{}:beatmapid".format(userID))
+		glob.redis.delete("peppy:actions:{}:beatmapmd5".format(userID))
+		glob.redis.delete("peppy:actions:{}:mods".format(userID))
+		glob.redis.delete("peppy:actions:{}:gamemode".format(userID))

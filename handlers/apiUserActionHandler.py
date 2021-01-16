@@ -16,22 +16,26 @@ class handler(requestsManager.asyncRequestHandler):
 		statusCode = 400
 		data = {"message": "unknown error"}
 		try:
-			if "id" in self.request.arguments:
-				username = int(self.get_argument("id"))
+			if "u" in self.request.arguments:
+				userID = int(self.get_argument("u"))
 			else:
 				raise exceptions.invalidArgumentsException()
 
-
-			if glob.redis.exists("peppy:actions:" + str(username) + ":actionid"):
+			if glob.redis.exists("peppy:actions:{}:actionid".format(str(userID))):
 				data["action"] = {}
-				data["action"]["id"] = int(glob.redis.get("peppy:actions:" + str(username) + ":actionid"))
-				data["action"]["text"] = str(glob.redis.get("peppy:actions:" + str(username) + ":actiontext"))
+				data["action"]["online"] = "1"
+				data["action"]["id"] = int(glob.redis.get("peppy:actions:{}:actionid".format(str(userID))).decode("utf-8"))
+				data["action"]["text"] = str(glob.redis.get("peppy:actions:{}:actiontext".format(str(userID))).decode("utf-8"))
 
 				data["action"]["beatmap"] = {}
-				data["action"]["beatmap"]["md5"] = str(glob.redis.get("peppy:actions:" + str(username) +":actionmd5"))
-				data["action"]["beatmap"]["id"] = int(glob.redis.get("peppy:actions:" + str(username) +":beatmapid"))
+				data["action"]["beatmap"]["md5"] = str(glob.redis.get("peppy:actions:{}:beatmapmd5".format(str(userID))).decode("utf-8"))
+				data["action"]["beatmap"]["id"] = int(glob.redis.get("peppy:actions:{}:beatmapid".format(str(userID))).decode("utf-8"))
+
+				data["action"]["mods"] = int(glob.redis.get("peppy:actions:{}:mods".format(str(userID))).decode("utf-8"))
+				data["action"]["game_mode"] = int(glob.redis.get("peppy:actions:{}:gamemode".format(str(userID))).decode("utf-8"))
 			else: 
 				data["action"] = {}
+				data["action"]["online"] = "0"
 
 			# Status code and message
 			statusCode = 200
@@ -44,6 +48,9 @@ class handler(requestsManager.asyncRequestHandler):
 		finally:
 			# Add status code to data
 			data["status"] = statusCode
+			# Send response
+			self.add_header("Access-Control-Allow-Origin", "*")
+			self.add_header("Content-Type", "application/json")
 
 			# Send response
 			self.write(json.dumps(data))

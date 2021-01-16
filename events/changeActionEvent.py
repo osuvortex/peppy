@@ -63,7 +63,9 @@ if userToken.matchID != -1 and userToken.actionID != actions.MULTIPLAYING and us
 	log.info("{} changed action: {} [{}][{}][{}]".format(username, str(userToken.actionID), userToken.actionText, userToken.actionMd5, userToken.beatmapID))
 
 	# Push the actions to redis
-	glob.redis.set("peppy:actions:" + userID + ":actionid", userToken.actionID)
-	glob.redis.set("peppy:actions:" + userID + ":actiontext", userToken.actionText)
-	glob.redis.set("peppy:actions:" + userID + ":actionmd5", userToken.actionMd5)
-	glob.redis.set("peppy:actions:" + userID + ":beatmapid", userToken.beatmapID)	
+	glob.redis.set("peppy:actions:{}:actionid".format(userID), userToken.actionID)
+	glob.redis.set("peppy:actions:{}:actiontext".format(userID), userToken.actionText)
+	glob.redis.set("peppy:actions:{}:beatmapmd5".format(userID), userToken.actionMd5)
+	glob.redis.set("peppy:actions:{}:beatmapid".format(userID), userToken.beatmapID)	
+	glob.redis.set("peppy:actions:{}:gamemode".format(userID), userToken.gameMode)
+	glob.redis.set("peppy:actions:{}:mods".format(userID), userToken.actionMods)
