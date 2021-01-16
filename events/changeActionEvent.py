@@ -61,3 +61,9 @@ if userToken.matchID != -1 and userToken.actionID != actions.MULTIPLAYING and us
 
 	# Console output
 	log.info("{} changed action: {} [{}][{}][{}]".format(username, str(userToken.actionID), userToken.actionText, userToken.actionMd5, userToken.beatmapID))
+
+	# Push the actions to redis
+	glob.redis.set("peppy:actions:" + userID + ":actionid", userToken.actionID)
+	glob.redis.set("peppy:actions:" + userID + ":actiontext", userToken.actionText)
+	glob.redis.set("peppy:actions:" + userID + ":actionmd5", userToken.actionMd5)
+	glob.redis.set("peppy:actions:" + userID + ":beatmapid", userToken.beatmapID)	
