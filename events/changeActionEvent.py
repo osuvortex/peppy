@@ -1,3 +1,4 @@
+import json
 from common.log import logUtils as log
 from constants import clientPackets
 from constants import serverPackets
@@ -62,10 +63,9 @@ if userToken.matchID != -1 and userToken.actionID != actions.MULTIPLAYING and us
 	# Console output
 	log.info("{} changed action: {} [{}][{}][{}]".format(username, str(userToken.actionID), userToken.actionText, userToken.actionMd5, userToken.beatmapID))
 
-	# Push the actions to redis
-	glob.redis.set("peppy:actions:{}:actionid".format(userID), userToken.actionID)
-	glob.redis.set("peppy:actions:{}:actiontext".format(userID), userToken.actionText)
-	glob.redis.set("peppy:actions:{}:beatmapmd5".format(userID), userToken.actionMd5)
-	glob.redis.set("peppy:actions:{}:beatmapid".format(userID), userToken.beatmapID)	
-	glob.redis.set("peppy:actions:{}:gamemode".format(userID), userToken.gameMode)
-	glob.redis.set("peppy:actions:{}:mods".format(userID), userToken.actionMods)
+	#Update user's action on redis.
+	userAction = {'action': {'id': str(userToken.actionID), 'text': userToken.actionText,
+			'beatmap': {'md5': userToken.actionMd5, 'id': userToken.beatmapID},
+			'mods': userToken.actionMods, 'game_mode': userToken.gameMode}}
+
+	glob.redis.set("peppy:actions:{}".format(userID), json.dumps(userAction))

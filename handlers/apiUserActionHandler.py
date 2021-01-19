@@ -21,18 +21,9 @@ class handler(requestsManager.asyncRequestHandler):
 			else:
 				raise exceptions.invalidArgumentsException()
 
-			if glob.redis.exists("peppy:actions:{}:actionid".format(str(userID))):
-				data["action"] = {}
+			if glob.redis.exists("peppy:actions:{}".format(str(userID))):
+				data.update(json.loads(glob.redis.get("peppy:actions:{}".format(str(userID))).decode("utf-8")))
 				data["action"]["online"] = "1"
-				data["action"]["id"] = int(glob.redis.get("peppy:actions:{}:actionid".format(str(userID))).decode("utf-8"))
-				data["action"]["text"] = str(glob.redis.get("peppy:actions:{}:actiontext".format(str(userID))).decode("utf-8"))
-
-				data["action"]["beatmap"] = {}
-				data["action"]["beatmap"]["md5"] = str(glob.redis.get("peppy:actions:{}:beatmapmd5".format(str(userID))).decode("utf-8"))
-				data["action"]["beatmap"]["id"] = int(glob.redis.get("peppy:actions:{}:beatmapid".format(str(userID))).decode("utf-8"))
-
-				data["action"]["mods"] = int(glob.redis.get("peppy:actions:{}:mods".format(str(userID))).decode("utf-8"))
-				data["action"]["game_mode"] = int(glob.redis.get("peppy:actions:{}:gamemode".format(str(userID))).decode("utf-8"))
 			else: 
 				data["action"] = {}
 				data["action"]["online"] = "0"
@@ -55,3 +46,4 @@ class handler(requestsManager.asyncRequestHandler):
 			# Send response
 			self.write(json.dumps(data))
 			self.set_status(statusCode)
+
