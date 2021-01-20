@@ -23,10 +23,10 @@ class handler(requestsManager.asyncRequestHandler):
 
 			if glob.redis.exists("peppy:actions:{}".format(str(userID))):
 				data.update(json.loads(glob.redis.get("peppy:actions:{}".format(str(userID))).decode("utf-8")))
-				data["action"]["online"] = "1"
+				data["action"]["online"] = 1
 			else: 
 				data["action"] = {}
-				data["action"]["online"] = "0"
+				data["action"]["online"] = 0
 
 			# Status code and message
 			statusCode = 200

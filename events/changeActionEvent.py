@@ -64,7 +64,7 @@ if userToken.matchID != -1 and userToken.actionID != actions.MULTIPLAYING and us
 	log.info("{} changed action: {} [{}][{}][{}]".format(username, str(userToken.actionID), userToken.actionText, userToken.actionMd5, userToken.beatmapID))
 
 	#Update user's action on redis.
-	userAction = {'action': {'id': str(userToken.actionID), 'text': userToken.actionText,
+	userAction = {'action': {'id': userToken.actionID, 'text': userToken.actionText,
 			'beatmap': {'md5': userToken.actionMd5, 'id': userToken.beatmapID},
 			'mods': userToken.actionMods, 'game_mode': userToken.gameMode}}
 
