@@ -34,7 +34,7 @@ from objects import chatFilters
 from objects import fokabot
 from objects import glob
 from pubSubHandlers import changeUsernameHandler, setMainMenuIconHandler
-
+from pubSubHandlers import relaxHandler
 from pubSubHandlers import disconnectHandler
 from pubSubHandlers import banHandler
 from pubSubHandlers import notificationHandler
@@ -296,6 +296,7 @@ if __name__ == "__main__":
 			"peppy:ban": banHandler.handler(),
 			"peppy:notification": notificationHandler.handler(),
 			"peppy:set_main_menu_icon": setMainMenuIconHandler.handler(),
+			"peppy:switch_relax": relaxSwitch.handler(),
 		}).start()
 
 		# Start tornado

@@ -49,6 +49,18 @@ def instantRestart(fro, chan, message):
 	systemHelper.scheduleShutdown(0, True, delay=5)
 	return False
 
+def relaxSwitch(fro, chan, message):
+	token = glob.tokens.getTokenFromUsername(fro)
+	if glob.redis.exists("peppy:switch_relax"):
+		relaxStatus = json.loads(glob.redis.get("peppy:switch_relax").decode("utf-8"))
+		if relaxStatus[token]["relax"] == 1:
+			glob.redis.publish("peppy:switch_relax", json.dumps({"user_id": token, "relax": 0}))
+		elif relaxStatus[token]["relax"] == 0:
+			glob.redis.publish("peppy:switch_relax", json.dumps({"user_id": token, "relax": 1}))
+	else:
+		glob.redis.publish("peppy:switch_relax", json.dumps({"user_id": token, "relax": 1}))
+	return False
+
 def faq(fro, chan, message):
 	# TODO: Unhardcode this
 	messages = {
@@ -88,6 +100,7 @@ def alert(fro, chan, message):
 		return False
 	glob.streams.broadcast("main", serverPackets.notification(msg))
 	return False
+    
 
 def alertUser(fro, chan, message):
 	target = message[0].lower()
@@ -1376,6 +1389,9 @@ commands = [
 		"trigger": "!pp",
 		"callback": pp
 	}, {
+		"trigger": "!rx",
+		"callback": relaxSwitch
+	}, {    
 		"trigger": "!update",
 		"callback": updateBeatmap
 	}, {
