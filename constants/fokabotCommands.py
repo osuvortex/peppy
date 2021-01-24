@@ -50,16 +50,20 @@ def instantRestart(fro, chan, message):
 	return False
 
 def relaxSwitch(fro, chan, message):
-	token = glob.tokens.getTokenFromUsername(fro)
-	if glob.redis.exists("peppy:switch_relax"):
-		relaxStatus = json.loads(glob.redis.get("peppy:switch_relax").decode("utf-8"))
-		if relaxStatus[token]["relax"] == 1:
-			glob.redis.publish("peppy:switch_relax", json.dumps({"user_id": token, "relax": 0}))
-		elif relaxStatus[token]["relax"] == 0:
-			glob.redis.publish("peppy:switch_relax", json.dumps({"user_id": token, "relax": 1}))
-	else:
+	if chan.startswith("#"):
+		return False
+
+	token = userUtils.getIDSafe(fro)
+	switch = message[0].lower()
+	
+	if switch == "off":
+		glob.redis.publish("peppy:switch_relax", json.dumps({"user_id": token, "relax": 0}))
+		return "You are currently on Classic leaderboards"
+	elif switch == "on":
 		glob.redis.publish("peppy:switch_relax", json.dumps({"user_id": token, "relax": 1}))
-	return False
+		return "You are currently on Relax leaderboards"
+	else:
+		return "Wrong syntax: !rx <on-or-off>"
 
 def faq(fro, chan, message):
 	# TODO: Unhardcode this
@@ -1390,7 +1394,8 @@ commands = [
 		"callback": pp
 	}, {
 		"trigger": "!rx",
-		"callback": relaxSwitch
+		"callback": relaxSwitch,
+		"syntax": "<on-or-off>"
 	}, {    
 		"trigger": "!update",
 		"callback": updateBeatmap

@@ -296,7 +296,7 @@ if __name__ == "__main__":
 			"peppy:ban": banHandler.handler(),
 			"peppy:notification": notificationHandler.handler(),
 			"peppy:set_main_menu_icon": setMainMenuIconHandler.handler(),
-			"peppy:switch_relax": relaxSwitch.handler(),
+			"peppy:switch_relax": relaxHandler.handler(),
 		}).start()
 
 		# Start tornado

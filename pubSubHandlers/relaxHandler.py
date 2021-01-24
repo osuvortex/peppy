@@ -1,5 +1,4 @@
 from common.log import logUtils as log
-from common.ripple import bancho
 from common.redis import generalPubSubHandler
 from objects import glob
 from constants import serverPackets
@@ -26,7 +25,3 @@ class handler(generalPubSubHandler.generalPubSubHandler):
 			if currentRelax["is_relax"] == data["relax"]:
 				return
 			glob.db.execute("UPDATE users SET is_relax = %s WHERE id = %s", [data["relax"], data["user_id"]])
-			bancho.notification(
-				data["user_id"],
-				f"You are currently on {'Relax' if data["relax"] == 1 else 'Classic'} leaderboard"
-			)
